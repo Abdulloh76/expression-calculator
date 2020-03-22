@@ -46,7 +46,13 @@ function expressionCalculator(expr) {
         }
         else {
             if (arr[i]==')') {
-
+                while(opStack[opStack.length-1]!='(') {
+                    last1 = numStack.pop();
+                    last2 = numStack.pop();
+                    lastOp = opStack.pop();
+                    numStack.push(operation(lastOp, last2, last1));
+                }
+                opStack.pop();
             }
             else {
                 if (operations[opStack[opStack.length-1]] >= operations[arr[i]]) {
@@ -54,6 +60,7 @@ function expressionCalculator(expr) {
                     last2 = numStack.pop();
                     lastOp = opStack.pop();
                     numStack.push(operation(lastOp, last2, last1));
+                    
                     opStack.push(arr[i]);
                 }
                 else {
@@ -61,14 +68,17 @@ function expressionCalculator(expr) {
                 }
             }
         }
-
-        if (i == arr.length-1) {
-            result = operation(opStack[0], numStack[0], numStack[1]);
-        }
     }
 
-    if (result=='Infinity') throw "TypeError: Division by zero.";
-    return result;
+    while(opStack.length) {
+		last1=numStack.pop(); 
+        last2=numStack.pop();
+        lastOp=opStack.pop();
+        numStack.push(operation(lastOp, last2, last1));
+	}
+
+    if (numStack[0]=='Infinity') throw "TypeError: Division by zero.";
+    return numStack[0];
 }
 
 module.exports = {
